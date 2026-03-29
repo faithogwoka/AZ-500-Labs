@@ -1,12 +1,6 @@
 # 🔐 AZ-500: Azure Security Engineer Labs
 ### by Kemunto Faith Ogwoka | Cloud Security Specialist Trainee
 
-![Azure Security](https://img.shields.io/badge/Microsoft%20Azure-Security-0078D4?style=for-the-badge&logo=microsoft-azure&logoColor=white)
-![AZ-500](https://img.shields.io/badge/AZ--500-Certified-0078D4?style=for-the-badge&logo=microsoft&logoColor=white)
-![Cybershujaa](https://img.shields.io/badge/Cybershujaa-Trainee-green?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
-
----
 
 ## 👩‍💻 About This Repository
 
@@ -26,6 +20,7 @@ Each lab demonstrates real-world Azure security configurations, covering identit
 | 04 | [Configuring and Securing ACR & AKS](#lab-04---configuring-and-securing-acr--aks) | Containers, Kubernetes, Docker |
 | 05 | [Securing Azure SQL Database](#lab-05---securing-azure-sql-database) | Defender for SQL, Data Classification, Auditing |
 | 06 | [Service Endpoints and Securing Storage](#lab-06---service-endpoints-and-securing-storage) | Storage Security, Service Endpoints, NSG |
+
 
 ---
 
