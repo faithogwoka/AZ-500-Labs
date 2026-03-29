@@ -20,7 +20,8 @@ Each lab demonstrates real-world Azure security configurations, covering identit
 | 04 | [Configuring and Securing ACR & AKS](#lab-04---configuring-and-securing-acr--aks) | Containers, Kubernetes, Docker |
 | 05 | [Securing Azure SQL Database](#lab-05---securing-azure-sql-database) | Defender for SQL, Data Classification, Auditing |
 | 06 | [Service Endpoints and Securing Storage](#lab-06---service-endpoints-and-securing-storage) | Storage Security, Service Endpoints, NSG |
-
+| 07 | [Key Vault — Always Encrypted](#lab-07---key-vault--always-encrypted) | Key Vault, Always Encrypted, App Registration, SQL |
+| 08 | [Azure Monitor, Defender for Cloud, JIT Access & Microsoft Sentinel](#lab-08---azure-monitor-defender-for-cloud-jit-access--microsoft-sentinel) | Monitor, DCR, Defender, JIT, Sentinel, Playbooks |
 
 ---
 
@@ -114,6 +115,63 @@ Each lab demonstrates real-world Azure security configurations, covering identit
 
 ---
 
+### Lab 07 - Key Vault & Always Encrypted
+**Objective:** Implement secure data protection using Azure Key Vault and SQL Always Encrypted to safeguard sensitive database columns.
+
+**What I did:**
+- Deployed an Azure VM pre-installed with Visual Studio 2019 and SQL Server Management Studio using an ARM template
+- Created an **Azure Key Vault** using PowerShell and configured access policies
+- Added a software-protected **RSA 2048 key** (`MyLabKey`) and a **secret** (`SQLPassword`) to the vault
+- Registered a client application (`sqlApp`) in **Microsoft Entra ID** and generated a client secret (Key1)
+- Granted the registered app Key Vault permissions: `get`, `wrapKey`, `unwrapKey`, `sign`, `verify`, `list`
+- Retrieved the **ADO.NET connection string** for the Azure SQL `medical` database
+- Connected to the SQL database via **SQL Server Management Studio**, created a `Patients` table and encrypted two columns:
+  - `SSN` — **Deterministic** encryption
+  - `BirthDate` — **Randomized** encryption
+- Used the **Always Encrypted wizard** to store Column Master Keys and Column Encryption Keys in Key Vault
+- Built a **C# Console Application** in Visual Studio 2019, installed required NuGet packages, and configured it with the connection string, App Client ID, and Key1
+- Ran the app to load patient data and queried the database — confirmed SSN and BirthDate columns were **fully encrypted at rest** but decryptable by the authorized app
+
+**Tools Used:** Azure Key Vault · Always Encrypted · Microsoft Entra ID (App Registration) · Azure SQL · SQL Server Management Studio · Visual Studio 2019 · C# · PowerShell · ARM Templates
+
+---
+
+### Lab 08 - Azure Monitor, Defender for Cloud, JIT Access & Microsoft Sentinel
+**Objective:** Implement end-to-end Azure security monitoring and threat detection using Azure Monitor, Microsoft Defender for Cloud, Just-in-Time VM access, and Microsoft Sentinel.
+
+This lab covered four interconnected security scenarios:
+
+**Part 1 — Azure Monitor: Log Analytics & Data Collection Rule**
+- Deployed an Azure VM (`myVM`) using PowerShell with encryption at host enabled
+- Created a **Log Analytics Workspace** to centralize security and performance logs
+- Created an **Azure Storage Account** for log archiving
+- Configured a **Data Collection Rule (DCR)** with Performance Counters as the data source and the Log Analytics Workspace as the destination
+
+**Part 2 — Microsoft Defender for Cloud: Enhanced Security for Servers**
+- Navigated to **Environment Settings** in Microsoft Defender for Cloud
+- Expanded **Cloud Workload Protection (CWP)** and enabled **Defender for Servers Plan 2**
+- Reviewed advanced threat protection settings and plan details
+
+**Part 3 — Just-in-Time (JIT) VM Access**
+- Enabled **Just-in-Time VM Access** on `myVM` directly from the VM Configuration blade
+- Reviewed default JIT settings: RDP port 3389, max access 3 hours, any source IP
+- Edited port configurations and saved updated JIT policy
+- Submitted an **access request** through the VM Connect page to demonstrate JIT workflow in action
+
+**Part 4 — Microsoft Sentinel: SIEM & SOAR**
+- Onboarded **Microsoft Sentinel** and connected it to the existing Log Analytics Workspace
+- Installed the **Azure Activity** content hub connector and configured it via Azure Policy Assignment to stream diagnostic logs
+- Created a remediation task to enforce log streaming across the subscription
+- Created a **Scheduled Analytics Rule** — "Suspicious number of resource creation or deployment" — using the Azure Activity data connector
+- Deployed a **Logic App Playbook** (`Change-Incident-Severity`) using an ARM template and configured connection authentication
+- Created a **Custom Scheduled Alert Rule** with a 5-minute query interval and linked the playbook as an **Automated Response** via an Automation Rule
+- Triggered a real incident by **removing the JIT policy** — confirmed the deletion appeared in the Activity Log
+- Verified that **Microsoft Sentinel** detected the incident and displayed it with medium/high severity on the dashboard
+
+**Tools Used:** Azure Monitor · Log Analytics · Data Collection Rules · Microsoft Defender for Cloud · Just-in-Time VM Access · Microsoft Sentinel · Logic Apps · Azure Policy · ARM Templates · PowerShell · Content Hub
+
+---
+
 ## 🛠️ Technologies & Tools
 
 ```
@@ -122,7 +180,11 @@ Each lab demonstrates real-world Azure security configurations, covering identit
 🌐  Azure Virtual Networks   ☸️  Azure Kubernetes Service (AKS)
 🔥  Azure Firewall           🗄️  Azure SQL Database
 📦  Azure Storage            💻  PowerShell & Azure CLI (Bash)
-👥  Microsoft Entra ID       📊  SIEM & Audit Logging
+👥  Microsoft Entra ID       📊  Log Analytics & Azure Monitor
+🔑  Azure Key Vault          🔒  Always Encrypted (SQL)
+💻  Visual Studio 2019       🛡️  SQL Server Management Studio
+🕵️  Microsoft Sentinel       📋  Data Collection Rules (DCR)
+⏱️  Just-in-Time VM Access   🤖  Logic Apps & Playbooks
 ```
 
 ---
@@ -145,3 +207,4 @@ Each lab demonstrates real-world Azure security configurations, covering identit
 ---
 
 > *"Security is not a product, but a process." — Building one lab at a time.*
+
